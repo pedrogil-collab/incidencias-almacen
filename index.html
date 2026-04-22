@@ -7,30 +7,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');
-  :root {
-    --bg:#0d0f14; --surface:#161922; --surface2:#1e2230; --border:#2a2f3f;
-    --accent:#f0c040; --accent2:#e05a3a; --text:#eef0f6; --muted:#6b7280;
-    --success:#34d399; --radius:12px;
-  }
+  :root{--bg:#0d0f14;--surface:#161922;--surface2:#1e2230;--border:#2a2f3f;--accent:#f0c040;--accent2:#e05a3a;--text:#eef0f6;--muted:#6b7280;--success:#34d399;--radius:12px;}
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;}
-
   .header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
   .header-icon{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
   .header-text h1{font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;}
   .header-text span{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
-
   .main{padding:18px 16px 60px;max-width:520px;margin:0 auto;}
-
   .datetime-chip{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:right;margin-bottom:16px;}
   .datetime-chip span{color:var(--accent);}
-
   .config-banner{background:#1a1200;border:1px solid #5a4000;border-radius:var(--radius);padding:14px 16px;margin-bottom:18px;font-size:12px;color:#f0c040cc;line-height:1.7;}
   .config-banner.ok{background:#0a1a0a;border-color:#1a5a3a;color:var(--success);}
   .config-banner strong{display:block;margin-bottom:4px;font-size:13px;}
   .config-banner input{width:100%;margin-top:8px;background:#0d0f14;border:1px solid #5a4000;border-radius:6px;padding:9px 12px;color:var(--accent);font-family:'DM Mono',monospace;font-size:12px;outline:none;}
   .config-banner input:focus{border-color:var(--accent);}
-
   .step-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px;position:relative;overflow:hidden;transition:border-color .25s;}
   .step-card.done{border-color:var(--success);}
   .step-card.done::after{content:'✓';position:absolute;top:14px;right:16px;color:var(--success);font-size:16px;font-weight:800;}
@@ -39,13 +30,11 @@
   .step-card.done .step-num{background:var(--success);color:#000;}
   .step-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}
   .step-card.done .step-label{color:var(--success);}
-
   label{display:block;font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;}
   input[type="text"],select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Syne',sans-serif;font-size:15px;padding:12px 14px;outline:none;transition:border-color .2s;-webkit-appearance:none;}
   input[type="text"]:focus,select:focus{border-color:var(--accent);}
   select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer;}
   select option{background:#1e2230;}
-
   .scanner-box{border-radius:10px;overflow:hidden;background:#000;aspect-ratio:4/3;max-height:230px;position:relative;display:none;margin-bottom:10px;}
   .scanner-box.active{display:block;}
   #scanner-container{width:100%;height:100%;}
@@ -54,17 +43,14 @@
   .scan-frame{width:72%;aspect-ratio:3/1;border:2px solid rgba(240,192,64,.6);border-radius:6px;position:relative;}
   .scan-line{position:absolute;left:0;right:0;height:2px;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:scanMove 1.8s ease-in-out infinite;}
   @keyframes scanMove{0%,100%{top:5%;}50%{top:90%;}}
-
   .sscc-result{margin-top:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-family:'DM Mono',monospace;font-size:14px;display:flex;align-items:center;gap:10px;min-height:44px;}
   .sscc-icon{color:var(--muted);font-size:16px;}
   .sscc-val{color:var(--accent);font-weight:500;word-break:break-all;flex:1;display:none;}
   .sscc-empty{color:var(--muted);font-size:12px;}
-
   .photo-preview{width:100%;border-radius:10px;overflow:hidden;display:none;position:relative;margin-bottom:10px;}
   .photo-preview.active{display:block;}
   .photo-preview img{width:100%;display:block;border-radius:10px;}
   .photo-remove{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.75);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
-
   .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:8px;border:none;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:opacity .15s,transform .1s;}
   .btn:active{transform:scale(.97);}
   .btn+.btn{margin-top:8px;}
@@ -79,14 +65,15 @@
   .btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted);}
   .btn-outline:hover{border-color:var(--accent);color:var(--accent);}
   .btn-cfg{background:transparent;border:1px solid #5a4000;color:var(--accent);font-size:12px;margin-top:8px;}
-
-  .status-msg{display:none;margin-top:14px;padding:12px 14px;border-radius:8px;font-size:13px;font-weight:600;text-align:center;line-height:1.5;}
+  .status-msg{display:none;margin-top:14px;padding:12px 14px;border-radius:8px;font-size:13px;font-weight:600;text-align:center;line-height:1.6;}
   .status-msg.uploading{display:flex;align-items:center;justify-content:center;gap:10px;background:#1a1200;border:1px solid #5a4000;color:var(--accent);}
   .status-msg.success{display:block;background:#0a2a1a;border:1px solid #1a5a3a;color:var(--success);}
   .status-msg.error{display:block;background:#2a0a0a;border:1px solid #5a1a1a;color:#f87171;}
   .spinner{width:16px;height:16px;border:2px solid transparent;border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
   @keyframes spin{to{transform:rotate(360deg);}}
-
+  .progress-bar{width:100%;height:4px;background:var(--border);border-radius:2px;margin-top:8px;overflow:hidden;display:none;}
+  .progress-bar.active{display:block;}
+  .progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s;width:0%;}
   .history-section{margin-top:32px;}
   .history-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
   .history-title::after{content:'';flex:1;height:1px;background:var(--border);}
@@ -102,7 +89,6 @@
   .hi-status.ok{background:#0a2a1a;color:var(--success);}
   .hi-status.pending{background:#1a1200;color:var(--accent);}
   .hi-status.err{background:#2a0a0a;color:#f87171;}
-
   input[type="file"]{display:none;}
 </style>
 </head>
@@ -128,18 +114,14 @@
 
   <div class="step-card" id="card1">
     <div class="step-header"><div class="step-num">1</div><div class="step-label">Operario</div></div>
-    <label for="operario">Selecciona el operario</label>
-    <select id="operario" onchange="checkStep1()">
-      <option value="">— Configura el script primero —</option>
-    </select>
+    <label>Selecciona el operario</label>
+    <select id="operario" onchange="checkStep1()"><option value="">— Configura el script primero —</option></select>
   </div>
 
   <div class="step-card" id="card2">
     <div class="step-header"><div class="step-num">2</div><div class="step-label">Tipo de Incidencia</div></div>
-    <label for="tipoIncidencia">Selecciona el tipo</label>
-    <select id="tipoIncidencia" onchange="checkStep2()">
-      <option value="">— Configura el script primero —</option>
-    </select>
+    <label>Selecciona el tipo</label>
+    <select id="tipoIncidencia" onchange="checkStep2()"><option value="">— Configura el script primero —</option></select>
   </div>
 
   <div class="step-card" id="card3">
@@ -174,7 +156,9 @@
   </div>
 
   <button class="btn btn-submit" id="btnSubmit" onclick="submitIncidencia()" disabled>🚀 Registrar Incidencia</button>
+
   <div class="status-msg" id="statusMsg"></div>
+  <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
 
   <div class="history-section">
     <div class="history-title">Registros de hoy</div>
@@ -194,12 +178,10 @@ setInterval(updateClock,1000); updateClock();
 
 // ── CONFIG ─────────────────────────────────────────────────────────────
 var SCRIPT_URL=localStorage.getItem('scriptUrl')||'';
-
 window.onload=function(){
   if(SCRIPT_URL){ document.getElementById('scriptUrl')&&(document.getElementById('scriptUrl').value=SCRIPT_URL); setBannerOk(); cargarDatos(); }
   loadHistory();
 };
-
 function saveConfig(){
   var val=document.getElementById('scriptUrl').value.trim();
   if(!val){alert('Pega primero la URL del script.');return;}
@@ -209,7 +191,7 @@ function saveConfig(){
 function setBannerOk(){
   var b=document.getElementById('configBanner');
   b.className='config-banner ok';
-  b.innerHTML='✅ <strong>Apps Script conectado</strong> Datos cargados desde Google Sheets. <a href="#" onclick="resetConfig();return false;" style="color:var(--accent);font-size:11px;">Cambiar URL</a>';
+  b.innerHTML='✅ <strong>Apps Script conectado</strong> Datos desde Google Sheets. <a href="#" onclick="resetConfig();return false;" style="color:var(--accent);font-size:11px;">Cambiar URL</a>';
 }
 function resetConfig(){
   var b=document.getElementById('configBanner');
@@ -219,56 +201,42 @@ function resetConfig(){
 }
 
 // ── JSONP ──────────────────────────────────────────────────────────────
-var _cbIndex=0;
+var _cbIdx=0;
 function jsonp(url, timeoutMs){
   return new Promise(function(resolve,reject){
-    var cbName='__jcb'+(++_cbIndex);
-    var script=document.createElement('script');
+    var cb='__jcb'+(++_cbIdx);
+    var s=document.createElement('script');
     var done=false;
-    var timer=setTimeout(function(){
-      if(done)return; done=true;
-      cleanup(); reject(new Error('Timeout — comprueba la URL del script'));
-    }, timeoutMs||15000);
-    window[cbName]=function(data){ if(done)return; done=true; cleanup(); resolve(data); };
-    function cleanup(){ clearTimeout(timer); delete window[cbName]; if(script.parentNode) script.parentNode.removeChild(script); }
-    script.onerror=function(){ if(done)return; done=true; cleanup(); reject(new Error('Error de red')); };
-    script.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+cbName+'&_='+Date.now();
-    document.head.appendChild(script);
+    var t=setTimeout(function(){ if(done)return; done=true; cleanup(); reject(new Error('Timeout')); }, timeoutMs||20000);
+    window[cb]=function(d){ if(done)return; done=true; cleanup(); resolve(d); };
+    function cleanup(){ clearTimeout(t); delete window[cb]; if(s.parentNode) s.parentNode.removeChild(s); }
+    s.onerror=function(){ if(done)return; done=true; cleanup(); reject(new Error('Error de red')); };
+    s.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+cb+'&_='+Date.now();
+    document.head.appendChild(s);
   });
 }
 
 // ── CARGAR DATOS ───────────────────────────────────────────────────────
 function cargarDatos(){
   if(!SCRIPT_URL)return;
-  jsonp(SCRIPT_URL+'?action=getOperarios').then(function(data){
+  jsonp(SCRIPT_URL+'?action=getOperarios').then(function(d){
     var sel=document.getElementById('operario');
     sel.innerHTML='<option value="">— Selecciona operario —</option>';
-    (data.valores||[]).forEach(function(op){
-      if(!op)return;
-      var o=document.createElement('option'); o.value=op; o.textContent=op; sel.appendChild(o);
-    });
-  }).catch(function(err){ document.getElementById('operario').innerHTML='<option value="">— Error: '+err.message+' —</option>'; });
+    (d.valores||[]).forEach(function(op){ if(!op)return; var o=document.createElement('option'); o.value=op; o.textContent=op; sel.appendChild(o); });
+  }).catch(function(e){ document.getElementById('operario').innerHTML='<option value="">— Error: '+e.message+' —</option>'; });
 
-  jsonp(SCRIPT_URL+'?action=getIncidencias').then(function(data){
+  jsonp(SCRIPT_URL+'?action=getIncidencias').then(function(d){
     var sel=document.getElementById('tipoIncidencia');
     sel.innerHTML='<option value="">— Selecciona incidencia —</option>';
-    (data.valores||[]).forEach(function(inc){
-      if(!inc)return;
-      var o=document.createElement('option'); o.value=inc; o.textContent=inc; sel.appendChild(o);
-    });
-  }).catch(function(err){ document.getElementById('tipoIncidencia').innerHTML='<option value="">— Error: '+err.message+' —</option>'; });
+    (d.valores||[]).forEach(function(inc){ if(!inc)return; var o=document.createElement('option'); o.value=inc; o.textContent=inc; sel.appendChild(o); });
+  }).catch(function(e){ document.getElementById('tipoIncidencia').innerHTML='<option value="">— Error: '+e.message+' —</option>'; });
 }
 
 // ── STEPS ──────────────────────────────────────────────────────────────
 var ssccValue='', photoBlob=null, scannerRunning=false;
-
 function checkStep1(){ document.getElementById('card1').className='step-card'+(document.getElementById('operario').value?' done':''); checkSubmit(); }
 function checkStep2(){ document.getElementById('card2').className='step-card'+(document.getElementById('tipoIncidencia').value?' done':''); checkSubmit(); }
-function checkSubmit(){
-  var op=document.getElementById('operario').value;
-  var ti=document.getElementById('tipoIncidencia').value;
-  document.getElementById('btnSubmit').disabled=!(op&&ti&&ssccValue);
-}
+function checkSubmit(){ document.getElementById('btnSubmit').disabled=!(document.getElementById('operario').value&&document.getElementById('tipoIncidencia').value&&ssccValue); }
 
 // ── ESCÁNER ────────────────────────────────────────────────────────────
 function toggleScanner(){ if(scannerRunning) stopScanner(); else startScanner(); }
@@ -278,10 +246,8 @@ function startScanner(){
   document.getElementById('btnScan').classList.add('scanning');
   scannerRunning=true;
   Quagga.init({
-    inputStream:{name:'Live',type:'LiveStream',target:document.getElementById('scanner-container'),
-      constraints:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}},
-    decoder:{readers:['code_128_reader','ean_reader','ean_8_reader','code_39_reader','itf_reader']},
-    locate:true
+    inputStream:{name:'Live',type:'LiveStream',target:document.getElementById('scanner-container'),constraints:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}},
+    decoder:{readers:['code_128_reader','ean_reader','ean_8_reader','code_39_reader','itf_reader']},locate:true
   },function(err){ if(err){alert('No se pudo acceder a la cámara: '+err); stopScanner(); return;} Quagga.start(); });
   Quagga.onDetected(function(r){ if(r.codeResult.code){setSSCC(r.codeResult.code); stopScanner();} });
 }
@@ -322,6 +288,82 @@ function removePhoto(){
   document.getElementById('photoInput').value='';
 }
 
+// ── COMPRIMIR IMAGEN ───────────────────────────────────────────────────
+function compressImage(blob, maxWidth, quality){
+  return new Promise(function(resolve){
+    var img=new Image();
+    var url=URL.createObjectURL(blob);
+    img.onload=function(){
+      var w=img.width, h=img.height;
+      if(w>maxWidth){ h=Math.round(h*maxWidth/w); w=maxWidth; }
+      var canvas=document.createElement('canvas');
+      canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.src=url;
+  });
+}
+
+// ── SUBIDA POR CHUNKS ──────────────────────────────────────────────────
+var CHUNK_SIZE = 1500; // caracteres base64 por chunk (seguro para URL)
+
+async function uploadChunked(base64Data, filename, folderPath, rowIndex) {
+  // Generar ID único para esta subida
+  var uploadId = 'up_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  var chunks = [];
+
+  // Dividir en trozos
+  for(var i=0; i<base64Data.length; i+=CHUNK_SIZE){
+    chunks.push(base64Data.slice(i, i+CHUNK_SIZE));
+  }
+
+  var total = chunks.length;
+  setProgress(0, total);
+
+  // Enviar cada chunk
+  for(var i=0; i<total; i++){
+    showStatus('uploading', 'Subiendo foto... '+Math.round((i/total)*100)+'% ('+( i+1)+'/'+total+')');
+    setProgress(i+1, total);
+
+    var url = SCRIPT_URL
+      +'?action=chunk'
+      +'&uploadId='+encodeURIComponent(uploadId)
+      +'&chunkIdx='+i
+      +'&totalChunks='+total
+      +'&data='+encodeURIComponent(chunks[i]);
+
+    var result = await jsonp(url, 25000);
+    if(!result.ok) throw new Error('Error en chunk '+i+': '+(result.error||''));
+  }
+
+  // Ensamblar y guardar en Drive
+  showStatus('uploading', 'Guardando en Drive...');
+  var assembleUrl = SCRIPT_URL
+    +'?action=assemble'
+    +'&uploadId='+encodeURIComponent(uploadId)
+    +'&filename='+encodeURIComponent(filename)
+    +'&folderPath='+encodeURIComponent(folderPath)
+    +'&rowIndex='+rowIndex;
+
+  var finalResult = await jsonp(assembleUrl, 30000);
+  hideProgress();
+  if(!finalResult.ok) throw new Error(finalResult.error||'Error al ensamblar');
+  return finalResult.url;
+}
+
+function setProgress(done, total){
+  var bar=document.getElementById('progressBar');
+  var fill=document.getElementById('progressFill');
+  bar.classList.add('active');
+  fill.style.width=Math.round((done/total)*100)+'%';
+}
+function hideProgress(){
+  document.getElementById('progressBar').classList.remove('active');
+  document.getElementById('progressFill').style.width='0%';
+}
+
 // ── SUBMIT ─────────────────────────────────────────────────────────────
 async function submitIncidencia(){
   var operario=document.getElementById('operario').value;
@@ -339,11 +381,10 @@ async function submitIncidencia(){
 
   if(!SCRIPT_URL){ showStatus('error','⚠️ Configura primero la URL del Apps Script.'); document.getElementById('btnSubmit').disabled=false; return; }
 
-  try {
-    // PASO 1: Guardar registro en Sheets
+  try{
+    // PASO 1 — Guardar registro en Sheets
     showStatus('uploading','Guardando registro en Sheets...');
-    var regUrl=SCRIPT_URL
-      +'?action=registrar'
+    var regUrl=SCRIPT_URL+'?action=registrar'
       +'&fecha='+encodeURIComponent(fecha)
       +'&hora='+encodeURIComponent(hora)
       +'&operario='+encodeURIComponent(operario)
@@ -352,42 +393,28 @@ async function submitIncidencia(){
       +'&timestamp='+encodeURIComponent(now.toISOString());
 
     var regResult=await jsonp(regUrl);
-    if(!regResult.ok) throw new Error(regResult.error||'Error al guardar en Sheets');
+    if(!regResult.ok) throw new Error(regResult.error||'Error al guardar registro');
+    var rowIndex=regResult.rowIndex||0;
 
     driveStatus='pending';
 
-    // PASO 2: Subir foto si hay
+    // PASO 2 — Subir foto por chunks si hay foto
     if(photoBlob){
-      showStatus('uploading','Subiendo foto a Drive...');
-      var base64Full=await blobToBase64(photoBlob);
-      // Quitar cabecera "data:image/jpeg;base64," — enviamos solo los bytes
-      var base64Data=base64Full.split(',')[1];
+      showStatus('uploading','Preparando foto...');
+      var compressed=await compressImage(photoBlob, 1024, 0.65);
+      var base64Data=compressed.split(',')[1]; // solo los bytes, sin cabecera
 
-      // La foto puede ser grande — la comprimimos antes de enviar
-      var compressed=await compressImage(photoBlob, 800, 0.7);
-      var compBase64=compressed.split(',')[1];
-
-      var fotoUrl=SCRIPT_URL
-        +'?action=uploadFoto'
-        +'&filename='+encodeURIComponent(filename)
-        +'&folderPath='+encodeURIComponent(folderPath)
-        +'&image='+encodeURIComponent(compBase64);
-
-      var fotoResult=await jsonp(fotoUrl, 30000);
-      if(fotoResult.ok){
-        driveUrl=fotoResult.url||'';
-        driveStatus='ok';
-        showStatus('success','✅ Incidencia registrada y foto subida a Drive · '+folderPath);
-      } else {
-        throw new Error(fotoResult.error||'Error al subir foto');
-      }
+      driveUrl=await uploadChunked(base64Data, filename, folderPath, rowIndex);
+      driveStatus='ok';
+      showStatus('success','✅ Incidencia registrada y foto guardada en Drive');
     } else {
-      showStatus('success','✅ Incidencia registrada en Sheets (sin foto).');
+      showStatus('success','✅ Incidencia registrada en Sheets (sin foto)');
     }
 
   } catch(err){
     console.error(err);
     driveStatus='err';
+    hideProgress();
     showStatus('error','⚠️ '+err.message);
   }
 
@@ -407,33 +434,6 @@ async function submitIncidencia(){
   },3500);
 }
 
-// Comprimir imagen antes de enviar
-function compressImage(blob, maxWidth, quality){
-  return new Promise(function(resolve){
-    var img=new Image();
-    var url=URL.createObjectURL(blob);
-    img.onload=function(){
-      var w=img.width, h=img.height;
-      if(w>maxWidth){ h=Math.round(h*maxWidth/w); w=maxWidth; }
-      var canvas=document.createElement('canvas');
-      canvas.width=w; canvas.height=h;
-      canvas.getContext('2d').drawImage(img,0,0,w,h);
-      URL.revokeObjectURL(url);
-      resolve(canvas.toDataURL('image/jpeg', quality));
-    };
-    img.src=url;
-  });
-}
-
-function blobToBase64(blob){
-  return new Promise(function(resolve,reject){
-    var r=new FileReader();
-    r.onload=function(){ resolve(r.result); };
-    r.onerror=reject;
-    r.readAsDataURL(blob);
-  });
-}
-
 function showStatus(type,msg){
   var el=document.getElementById('statusMsg');
   el.className='status-msg '+type;
@@ -441,9 +441,9 @@ function showStatus(type,msg){
 }
 
 // ── HISTORIAL ──────────────────────────────────────────────────────────
-function saveToHistory(record){
+function saveToHistory(r){
   var h=JSON.parse(localStorage.getItem('incidencias')||'[]');
-  h.unshift(record); if(h.length>100) h=h.slice(0,100);
+  h.unshift(r); if(h.length>100) h=h.slice(0,100);
   localStorage.setItem('incidencias',JSON.stringify(h));
 }
 function loadHistory(){ renderHistory(); }
