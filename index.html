@@ -7,113 +7,103 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');
-
   :root {
-    --bg: #0d0f14;
-    --surface: #161922;
-    --surface2: #1e2230;
-    --border: #2a2f3f;
-    --accent: #f0c040;
-    --accent2: #e05a3a;
-    --text: #eef0f6;
-    --muted: #6b7280;
-    --success: #34d399;
-    --radius: 12px;
+    --bg:#0d0f14; --surface:#161922; --surface2:#1e2230; --border:#2a2f3f;
+    --accent:#f0c040; --accent2:#e05a3a; --text:#eef0f6; --muted:#6b7280;
+    --success:#34d399; --radius:12px;
   }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Syne', sans-serif; background: var(--bg); color: var(--text); min-height: 100dvh; overflow-x: hidden; }
+  .header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
+  .header-icon{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .header-text h1{font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;}
+  .header-text span{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
 
-  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 18px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
-  .header-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-  .header-text h1 { font-size: 15px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
-  .header-text span { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .main{padding:18px 16px 60px;max-width:520px;margin:0 auto;}
 
-  .main { padding: 18px 16px 60px; max-width: 520px; margin: 0 auto; }
+  .datetime-chip{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:right;margin-bottom:16px;}
+  .datetime-chip span{color:var(--accent);}
 
-  .datetime-chip { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); text-align: right; margin-bottom: 16px; }
-  .datetime-chip span { color: var(--accent); }
+  .config-banner{background:#1a1200;border:1px solid #5a4000;border-radius:var(--radius);padding:14px 16px;margin-bottom:18px;font-size:12px;color:#f0c040cc;line-height:1.7;}
+  .config-banner.ok{background:#0a1a0a;border-color:#1a5a3a;color:var(--success);}
+  .config-banner strong{display:block;margin-bottom:4px;font-size:13px;}
+  .config-banner input{width:100%;margin-top:8px;background:#0d0f14;border:1px solid #5a4000;border-radius:6px;padding:9px 12px;color:var(--accent);font-family:'DM Mono',monospace;font-size:12px;outline:none;}
+  .config-banner input:focus{border-color:var(--accent);}
 
-  .config-banner { background: #1a1200; border: 1px solid #5a4000; border-radius: var(--radius); padding: 14px 16px; margin-bottom: 18px; font-size: 12px; color: #f0c040cc; line-height: 1.7; }
-  .config-banner.ok { background: #0a1a0a; border-color: #1a5a3a; color: var(--success); }
-  .config-banner strong { display: block; margin-bottom: 4px; font-size: 13px; }
-  .config-banner input { width: 100%; margin-top: 8px; background: #0d0f14; border: 1px solid #5a4000; border-radius: 6px; padding: 9px 12px; color: var(--accent); font-family: 'DM Mono', monospace; font-size: 12px; outline: none; }
-  .config-banner input:focus { border-color: var(--accent); }
+  .step-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px;position:relative;overflow:hidden;transition:border-color .25s;}
+  .step-card.done{border-color:var(--success);}
+  .step-card.done::after{content:'✓';position:absolute;top:14px;right:16px;color:var(--success);font-size:16px;font-weight:800;}
+  .step-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .step-num{width:24px;height:24px;background:var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;flex-shrink:0;}
+  .step-card.done .step-num{background:var(--success);color:#000;}
+  .step-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}
+  .step-card.done .step-label{color:var(--success);}
 
-  .step-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 12px; position: relative; overflow: hidden; transition: border-color 0.25s; }
-  .step-card.done { border-color: var(--success); }
-  .step-card.done::after { content: '✓'; position: absolute; top: 14px; right: 16px; color: var(--success); font-size: 16px; font-weight: 800; }
-  .step-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .step-num { width: 24px; height: 24px; background: var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; font-family: 'DM Mono', monospace; flex-shrink: 0; }
-  .step-card.done .step-num { background: var(--success); color: #000; }
-  .step-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-  .step-card.done .step-label { color: var(--success); }
+  label{display:block;font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;}
+  input[type="text"],select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Syne',sans-serif;font-size:15px;padding:12px 14px;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+  input[type="text"]:focus,select:focus{border-color:var(--accent);}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer;}
+  select option{background:#1e2230;}
 
-  label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 6px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; }
+  .scanner-box{border-radius:10px;overflow:hidden;background:#000;aspect-ratio:4/3;max-height:230px;position:relative;display:none;margin-bottom:10px;}
+  .scanner-box.active{display:block;}
+  #scanner-container{width:100%;height:100%;}
+  #scanner-container video,#scanner-container canvas{width:100%!important;height:100%!important;object-fit:cover;}
+  .scan-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+  .scan-frame{width:72%;aspect-ratio:3/1;border:2px solid rgba(240,192,64,.6);border-radius:6px;position:relative;}
+  .scan-line{position:absolute;left:0;right:0;height:2px;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:scanMove 1.8s ease-in-out infinite;}
+  @keyframes scanMove{0%,100%{top:5%;}50%{top:90%;}}
 
-  input[type="text"], select { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Syne', sans-serif; font-size: 15px; padding: 12px 14px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
-  input[type="text"]:focus, select:focus { border-color: var(--accent); }
-  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer; }
-  select option { background: #1e2230; }
+  .sscc-result{margin-top:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-family:'DM Mono',monospace;font-size:14px;display:flex;align-items:center;gap:10px;min-height:44px;}
+  .sscc-icon{color:var(--muted);font-size:16px;}
+  .sscc-val{color:var(--accent);font-weight:500;word-break:break-all;flex:1;display:none;}
+  .sscc-empty{color:var(--muted);font-size:12px;}
 
-  .scanner-box { border-radius: 10px; overflow: hidden; background: #000; aspect-ratio: 4/3; max-height: 230px; position: relative; display: none; margin-bottom: 10px; }
-  .scanner-box.active { display: block; }
-  #scanner-container { width: 100%; height: 100%; }
-  #scanner-container video, #scanner-container canvas { width: 100% !important; height: 100% !important; object-fit: cover; }
-  .scan-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
-  .scan-frame { width: 72%; aspect-ratio: 3/1; border: 2px solid rgba(240,192,64,0.6); border-radius: 6px; position: relative; }
-  .scan-line { position: absolute; left: 0; right: 0; height: 2px; background: var(--accent); box-shadow: 0 0 10px var(--accent); animation: scanMove 1.8s ease-in-out infinite; }
-  @keyframes scanMove { 0%,100% { top: 5%; } 50% { top: 90%; } }
+  .photo-preview{width:100%;border-radius:10px;overflow:hidden;display:none;position:relative;margin-bottom:10px;}
+  .photo-preview.active{display:block;}
+  .photo-preview img{width:100%;display:block;border-radius:10px;}
+  .photo-remove{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.75);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
 
-  .sscc-result { margin-top: 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 11px 14px; font-family: 'DM Mono', monospace; font-size: 14px; display: flex; align-items: center; gap: 10px; min-height: 44px; }
-  .sscc-icon { color: var(--muted); font-size: 16px; }
-  .sscc-val { color: var(--accent); font-weight: 500; word-break: break-all; flex: 1; display: none; }
-  .sscc-empty { color: var(--muted); font-size: 12px; }
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:8px;border:none;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:opacity .15s,transform .1s;}
+  .btn:active{transform:scale(.97);}
+  .btn+.btn{margin-top:8px;}
+  .btn-scan{background:var(--accent2);color:#fff;margin-bottom:10px;}
+  .btn-scan.scanning{background:#7a2a1a;}
+  .btn-photo{background:var(--surface2);border:2px dashed var(--border);color:var(--muted);flex-direction:column;gap:4px;padding:22px;transition:border-color .2s,color .2s;}
+  .btn-photo .ico{font-size:28px;}
+  .btn-photo .sub{font-size:11px;font-weight:400;text-transform:none;letter-spacing:0;}
+  .btn-photo:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-submit{background:var(--accent);color:#000;font-size:15px;padding:16px;margin-top:20px;border-radius:var(--radius);font-weight:800;}
+  .btn-submit:disabled{opacity:.3;cursor:not-allowed;transform:none;}
+  .btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted);}
+  .btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-cfg{background:transparent;border:1px solid #5a4000;color:var(--accent);font-size:12px;margin-top:8px;}
 
-  .photo-preview { width: 100%; border-radius: 10px; overflow: hidden; display: none; position: relative; margin-bottom: 10px; }
-  .photo-preview.active { display: block; }
-  .photo-preview img { width: 100%; display: block; border-radius: 10px; }
-  .photo-remove { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.75); border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .status-msg{display:none;margin-top:14px;padding:12px 14px;border-radius:8px;font-size:13px;font-weight:600;text-align:center;line-height:1.5;}
+  .status-msg.uploading{display:flex;align-items:center;justify-content:center;gap:10px;background:#1a1200;border:1px solid #5a4000;color:var(--accent);}
+  .status-msg.success{display:block;background:#0a2a1a;border:1px solid #1a5a3a;color:var(--success);}
+  .status-msg.error{display:block;background:#2a0a0a;border:1px solid #5a1a1a;color:#f87171;}
+  .spinner{width:16px;height:16px;border:2px solid transparent;border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+  @keyframes spin{to{transform:rotate(360deg);}}
 
-  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 13px; border-radius: 8px; border: none; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer; transition: opacity 0.15s, transform 0.1s; }
-  .btn:active { transform: scale(0.97); }
-  .btn + .btn { margin-top: 8px; }
-  .btn-scan { background: var(--accent2); color: #fff; margin-bottom: 10px; }
-  .btn-scan.scanning { background: #7a2a1a; }
-  .btn-photo { background: var(--surface2); border: 2px dashed var(--border); color: var(--muted); flex-direction: column; gap: 4px; padding: 22px; transition: border-color 0.2s, color 0.2s; }
-  .btn-photo .ico { font-size: 28px; }
-  .btn-photo .sub { font-size: 11px; font-weight: 400; text-transform: none; letter-spacing: 0; }
-  .btn-photo:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-submit { background: var(--accent); color: #000; font-size: 15px; padding: 16px; margin-top: 20px; border-radius: var(--radius); font-weight: 800; }
-  .btn-submit:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
-  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-cfg { background: transparent; border: 1px solid #5a4000; color: var(--accent); font-size: 12px; margin-top: 8px; }
+  .history-section{margin-top:32px;}
+  .history-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .history-title::after{content:'';flex:1;height:1px;background:var(--border);}
+  .history-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;}
+  .hi-badge{background:var(--surface2);border-radius:6px;padding:6px 8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-align:center;flex-shrink:0;min-width:52px;line-height:1.5;}
+  .hi-time{color:var(--accent);font-size:12px;font-weight:500;}
+  .hi-info{flex:1;min-width:0;}
+  .hi-sscc{font-family:'DM Mono',monospace;font-size:13px;color:var(--text);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .hi-type{font-size:11px;color:var(--muted);}
+  .hi-operator{font-size:11px;color:var(--muted);margin-top:2px;}
+  .hi-link{color:var(--accent);font-size:11px;display:block;margin-top:3px;}
+  .hi-status{font-size:10px;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:20px;letter-spacing:.05em;flex-shrink:0;align-self:center;white-space:nowrap;}
+  .hi-status.ok{background:#0a2a1a;color:var(--success);}
+  .hi-status.pending{background:#1a1200;color:var(--accent);}
+  .hi-status.err{background:#2a0a0a;color:#f87171;}
 
-  .status-msg { display: none; margin-top: 14px; padding: 12px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; text-align: center; line-height: 1.5; }
-  .status-msg.uploading { display: flex; align-items: center; justify-content: center; gap: 10px; background: #1a1200; border: 1px solid #5a4000; color: var(--accent); }
-  .status-msg.success { display: block; background: #0a2a1a; border: 1px solid #1a5a3a; color: var(--success); }
-  .status-msg.error { display: block; background: #2a0a0a; border: 1px solid #5a1a1a; color: #f87171; }
-  .spinner { width: 16px; height: 16px; border: 2px solid transparent; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .history-section { margin-top: 32px; }
-  .history-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .history-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-  .history-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 13px 14px; margin-bottom: 8px; display: flex; gap: 12px; align-items: flex-start; }
-  .hi-badge { background: var(--surface2); border-radius: 6px; padding: 6px 8px; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-align: center; flex-shrink: 0; min-width: 52px; line-height: 1.5; }
-  .hi-time { color: var(--accent); font-size: 12px; font-weight: 500; }
-  .hi-info { flex: 1; min-width: 0; }
-  .hi-sscc { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .hi-type { font-size: 11px; color: var(--muted); }
-  .hi-operator { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .hi-link { color: var(--accent); font-size: 11px; display: block; margin-top: 3px; }
-  .hi-status { font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 3px 8px; border-radius: 20px; letter-spacing: 0.05em; flex-shrink: 0; align-self: center; white-space: nowrap; }
-  .hi-status.ok { background: #0a2a1a; color: var(--success); }
-  .hi-status.pending { background: #1a1200; color: var(--accent); }
-  .hi-status.err { background: #2a0a0a; color: #f87171; }
-
-  input[type="file"] { display: none; }
+  input[type="file"]{display:none;}
 </style>
 </head>
 <body>
@@ -129,7 +119,6 @@
 <div class="main">
   <div class="datetime-chip" id="clock">—</div>
 
-  <!-- CONFIG -->
   <div class="config-banner" id="configBanner">
     <strong>⚙️ Configuración — Apps Script</strong>
     Pega la URL de tu Apps Script para conectar con Drive y Sheets.
@@ -137,7 +126,6 @@
     <button class="btn btn-cfg" onclick="saveConfig()">💾 Guardar y conectar</button>
   </div>
 
-  <!-- STEP 1: OPERARIO -->
   <div class="step-card" id="card1">
     <div class="step-header"><div class="step-num">1</div><div class="step-label">Operario</div></div>
     <label for="operario">Selecciona el operario</label>
@@ -146,7 +134,6 @@
     </select>
   </div>
 
-  <!-- STEP 2: TIPO INCIDENCIA -->
   <div class="step-card" id="card2">
     <div class="step-header"><div class="step-num">2</div><div class="step-label">Tipo de Incidencia</div></div>
     <label for="tipoIncidencia">Selecciona el tipo</label>
@@ -155,7 +142,6 @@
     </select>
   </div>
 
-  <!-- STEP 3: SSCC -->
   <div class="step-card" id="card3">
     <div class="step-header"><div class="step-num">3</div><div class="step-label">Código SSCC</div></div>
     <button class="btn btn-scan" id="btnScan" onclick="toggleScanner()">
@@ -173,11 +159,10 @@
     <button class="btn btn-outline" style="margin-top:8px;font-size:12px;" onclick="manualSSCC()">✏️ Introducir manualmente</button>
   </div>
 
-  <!-- STEP 4: FOTO -->
   <div class="step-card" id="card4">
     <div class="step-header"><div class="step-num">4</div><div class="step-label">Fotografía</div></div>
     <div class="photo-preview" id="photoPreview">
-      <img id="photoImg" src="" alt="Foto incidencia" />
+      <img id="photoImg" src="" alt="Foto" />
       <button class="photo-remove" onclick="removePhoto()">✕</button>
     </div>
     <button class="btn btn-photo" id="btnPhoto" onclick="triggerCamera()">
@@ -191,7 +176,6 @@
   <button class="btn btn-submit" id="btnSubmit" onclick="submitIncidencia()" disabled>🚀 Registrar Incidencia</button>
   <div class="status-msg" id="statusMsg"></div>
 
-  <!-- HISTORIAL -->
   <div class="history-section">
     <div class="history-title">Registros de hoy</div>
     <div id="historyList"><p style="color:var(--muted);font-size:13px;text-align:center;padding:20px 0;">Sin registros aún</p></div>
@@ -200,322 +184,285 @@
 
 <script>
 // ── RELOJ ──────────────────────────────────────────────────────────────
-function updateClock() {
-  var now = new Date();
-  var d = now.toLocaleDateString('es-ES', { weekday:'short', day:'2-digit', month:'2-digit', year:'numeric' });
-  var t = now.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-  document.getElementById('clock').innerHTML = d + ' &nbsp;·&nbsp; <span>' + t + '</span>';
+function updateClock(){
+  var now=new Date();
+  var d=now.toLocaleDateString('es-ES',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'});
+  var t=now.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('clock').innerHTML=d+' &nbsp;·&nbsp; <span>'+t+'</span>';
 }
-setInterval(updateClock, 1000);
-updateClock();
+setInterval(updateClock,1000); updateClock();
 
 // ── CONFIG ─────────────────────────────────────────────────────────────
-var SCRIPT_URL = localStorage.getItem('scriptUrl') || '';
+var SCRIPT_URL=localStorage.getItem('scriptUrl')||'';
 
-window.onload = function() {
-  if (SCRIPT_URL) {
-    document.getElementById('scriptUrl') && (document.getElementById('scriptUrl').value = SCRIPT_URL);
-    setBannerOk();
-    cargarDatos();
-  }
+window.onload=function(){
+  if(SCRIPT_URL){ document.getElementById('scriptUrl')&&(document.getElementById('scriptUrl').value=SCRIPT_URL); setBannerOk(); cargarDatos(); }
   loadHistory();
 };
 
-function saveConfig() {
-  var val = document.getElementById('scriptUrl').value.trim();
-  if (!val) { alert('Pega primero la URL del script.'); return; }
-  SCRIPT_URL = val;
-  localStorage.setItem('scriptUrl', SCRIPT_URL);
-  setBannerOk();
-  cargarDatos();
+function saveConfig(){
+  var val=document.getElementById('scriptUrl').value.trim();
+  if(!val){alert('Pega primero la URL del script.');return;}
+  SCRIPT_URL=val; localStorage.setItem('scriptUrl',SCRIPT_URL);
+  setBannerOk(); cargarDatos();
+}
+function setBannerOk(){
+  var b=document.getElementById('configBanner');
+  b.className='config-banner ok';
+  b.innerHTML='✅ <strong>Apps Script conectado</strong> Datos cargados desde Google Sheets. <a href="#" onclick="resetConfig();return false;" style="color:var(--accent);font-size:11px;">Cambiar URL</a>';
+}
+function resetConfig(){
+  var b=document.getElementById('configBanner');
+  b.className='config-banner';
+  b.innerHTML='<strong>⚙️ Configuración — Apps Script</strong>Pega la URL de tu Apps Script.<input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" /><button class="btn btn-cfg" onclick="saveConfig()">💾 Guardar y conectar</button>';
+  document.getElementById('scriptUrl').value=SCRIPT_URL;
 }
 
-function setBannerOk() {
-  var b = document.getElementById('configBanner');
-  b.className = 'config-banner ok';
-  b.innerHTML = '✅ <strong>Apps Script conectado</strong> Los datos se cargan desde Google Sheets. '
-    + '<a href="#" onclick="resetConfig();return false;" style="color:var(--accent);font-size:11px;">Cambiar URL</a>';
-}
-
-function resetConfig() {
-  var b = document.getElementById('configBanner');
-  b.className = 'config-banner';
-  b.innerHTML = '<strong>⚙️ Configuración — Apps Script</strong>Pega la URL de tu Apps Script para conectar con Drive y Sheets.'
-    + '<input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" />'
-    + '<button class="btn btn-cfg" onclick="saveConfig()">💾 Guardar y conectar</button>';
-  document.getElementById('scriptUrl').value = SCRIPT_URL;
-}
-
-// ── JSONP: petición segura sin CORS ────────────────────────────────────
-function jsonp(url, callbackName, timeout) {
-  return new Promise(function(resolve, reject) {
-    var cbName = callbackName || ('__cb_' + Date.now());
-    var script  = document.createElement('script');
-    var timer   = setTimeout(function() {
-      cleanup();
-      reject(new Error('Timeout'));
-    }, timeout || 10000);
-
-    window[cbName] = function(data) {
-      cleanup();
-      resolve(data);
-    };
-
-    function cleanup() {
-      clearTimeout(timer);
-      delete window[cbName];
-      if (script.parentNode) script.parentNode.removeChild(script);
-    }
-
-    script.onerror = function() { cleanup(); reject(new Error('Error de red')); };
-    script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + cbName;
+// ── JSONP ──────────────────────────────────────────────────────────────
+var _cbIndex=0;
+function jsonp(url, timeoutMs){
+  return new Promise(function(resolve,reject){
+    var cbName='__jcb'+(++_cbIndex);
+    var script=document.createElement('script');
+    var done=false;
+    var timer=setTimeout(function(){
+      if(done)return; done=true;
+      cleanup(); reject(new Error('Timeout — comprueba la URL del script'));
+    }, timeoutMs||15000);
+    window[cbName]=function(data){ if(done)return; done=true; cleanup(); resolve(data); };
+    function cleanup(){ clearTimeout(timer); delete window[cbName]; if(script.parentNode) script.parentNode.removeChild(script); }
+    script.onerror=function(){ if(done)return; done=true; cleanup(); reject(new Error('Error de red')); };
+    script.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+cbName+'&_='+Date.now();
     document.head.appendChild(script);
   });
 }
 
 // ── CARGAR DATOS ───────────────────────────────────────────────────────
-function cargarDatos() {
-  if (!SCRIPT_URL) return;
-
-  // Operarios
-  jsonp(SCRIPT_URL + '?action=getOperarios', '__cbOp')
-    .then(function(data) {
-      var sel = document.getElementById('operario');
-      sel.innerHTML = '<option value="">— Selecciona operario —</option>';
-      if (data.ok && data.valores.length > 0) {
-        data.valores.forEach(function(op) {
-          var o = document.createElement('option');
-          o.value = op; o.textContent = op;
-          sel.appendChild(o);
-        });
-      } else {
-        sel.innerHTML = '<option value="">— Añade operarios en Sheets —</option>';
-      }
-    })
-    .catch(function(err) {
-      document.getElementById('operario').innerHTML = '<option value="">— Error: ' + err.message + ' —</option>';
+function cargarDatos(){
+  if(!SCRIPT_URL)return;
+  jsonp(SCRIPT_URL+'?action=getOperarios').then(function(data){
+    var sel=document.getElementById('operario');
+    sel.innerHTML='<option value="">— Selecciona operario —</option>';
+    (data.valores||[]).forEach(function(op){
+      if(!op)return;
+      var o=document.createElement('option'); o.value=op; o.textContent=op; sel.appendChild(o);
     });
+  }).catch(function(err){ document.getElementById('operario').innerHTML='<option value="">— Error: '+err.message+' —</option>'; });
 
-  // Incidencias
-  jsonp(SCRIPT_URL + '?action=getIncidencias', '__cbInc')
-    .then(function(data) {
-      var sel = document.getElementById('tipoIncidencia');
-      sel.innerHTML = '<option value="">— Selecciona incidencia —</option>';
-      if (data.ok && data.valores.length > 0) {
-        data.valores.forEach(function(inc) {
-          var o = document.createElement('option');
-          o.value = inc; o.textContent = inc;
-          sel.appendChild(o);
-        });
-      } else {
-        sel.innerHTML = '<option value="">— Añade incidencias en Sheets —</option>';
-      }
-    })
-    .catch(function(err) {
-      document.getElementById('tipoIncidencia').innerHTML = '<option value="">— Error: ' + err.message + ' —</option>';
+  jsonp(SCRIPT_URL+'?action=getIncidencias').then(function(data){
+    var sel=document.getElementById('tipoIncidencia');
+    sel.innerHTML='<option value="">— Selecciona incidencia —</option>';
+    (data.valores||[]).forEach(function(inc){
+      if(!inc)return;
+      var o=document.createElement('option'); o.value=inc; o.textContent=inc; sel.appendChild(o);
     });
+  }).catch(function(err){ document.getElementById('tipoIncidencia').innerHTML='<option value="">— Error: '+err.message+' —</option>'; });
 }
 
 // ── STEPS ──────────────────────────────────────────────────────────────
-var ssccValue    = '';
-var photoBlob    = null;
-var scannerRunning = false;
+var ssccValue='', photoBlob=null, scannerRunning=false;
 
-function checkStep1() {
-  document.getElementById('card1').className = 'step-card' + (document.getElementById('operario').value ? ' done' : '');
-  checkSubmit();
-}
-function checkStep2() {
-  document.getElementById('card2').className = 'step-card' + (document.getElementById('tipoIncidencia').value ? ' done' : '');
-  checkSubmit();
-}
-function checkSubmit() {
-  var op = document.getElementById('operario').value;
-  var ti = document.getElementById('tipoIncidencia').value;
-  document.getElementById('btnSubmit').disabled = !(op && ti && ssccValue);
+function checkStep1(){ document.getElementById('card1').className='step-card'+(document.getElementById('operario').value?' done':''); checkSubmit(); }
+function checkStep2(){ document.getElementById('card2').className='step-card'+(document.getElementById('tipoIncidencia').value?' done':''); checkSubmit(); }
+function checkSubmit(){
+  var op=document.getElementById('operario').value;
+  var ti=document.getElementById('tipoIncidencia').value;
+  document.getElementById('btnSubmit').disabled=!(op&&ti&&ssccValue);
 }
 
 // ── ESCÁNER ────────────────────────────────────────────────────────────
-function toggleScanner() { if (scannerRunning) stopScanner(); else startScanner(); }
-
-function startScanner() {
+function toggleScanner(){ if(scannerRunning) stopScanner(); else startScanner(); }
+function startScanner(){
   document.getElementById('scannerBox').classList.add('active');
-  document.getElementById('scanBtnText').textContent = 'Detener escáner';
+  document.getElementById('scanBtnText').textContent='Detener escáner';
   document.getElementById('btnScan').classList.add('scanning');
-  scannerRunning = true;
-
+  scannerRunning=true;
   Quagga.init({
-    inputStream: { name:'Live', type:'LiveStream', target: document.getElementById('scanner-container'),
-      constraints: { facingMode:'environment', width:{ideal:1280}, height:{ideal:720} } },
-    decoder: { readers: ['code_128_reader','ean_reader','ean_8_reader','code_39_reader','itf_reader'] },
-    locate: true
-  }, function(err) {
-    if (err) { alert('No se pudo acceder a la cámara: ' + err); stopScanner(); return; }
-    Quagga.start();
-  });
-
-  Quagga.onDetected(function(result) {
-    if (result.codeResult.code) { setSSCC(result.codeResult.code); stopScanner(); }
-  });
+    inputStream:{name:'Live',type:'LiveStream',target:document.getElementById('scanner-container'),
+      constraints:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}},
+    decoder:{readers:['code_128_reader','ean_reader','ean_8_reader','code_39_reader','itf_reader']},
+    locate:true
+  },function(err){ if(err){alert('No se pudo acceder a la cámara: '+err); stopScanner(); return;} Quagga.start(); });
+  Quagga.onDetected(function(r){ if(r.codeResult.code){setSSCC(r.codeResult.code); stopScanner();} });
 }
-
-function stopScanner() {
-  try { Quagga.stop(); } catch(e) {}
+function stopScanner(){
+  try{Quagga.stop();}catch(e){}
   document.getElementById('scannerBox').classList.remove('active');
-  document.getElementById('scanBtnText').textContent = 'Escanear código de barras';
+  document.getElementById('scanBtnText').textContent='Escanear código de barras';
   document.getElementById('btnScan').classList.remove('scanning');
-  scannerRunning = false;
+  scannerRunning=false;
 }
-
-function setSSCC(code) {
-  ssccValue = code;
-  document.getElementById('ssccDisplay').textContent = code;
-  document.getElementById('ssccDisplay').style.display = 'inline';
-  document.getElementById('ssccEmpty').style.display = 'none';
-  document.getElementById('card3').className = 'step-card done';
+function setSSCC(code){
+  ssccValue=code;
+  document.getElementById('ssccDisplay').textContent=code;
+  document.getElementById('ssccDisplay').style.display='inline';
+  document.getElementById('ssccEmpty').style.display='none';
+  document.getElementById('card3').className='step-card done';
   checkSubmit();
-  if (navigator.vibrate) navigator.vibrate(120);
+  if(navigator.vibrate) navigator.vibrate(120);
 }
-
-function manualSSCC() {
-  var val = prompt('Introduce el código SSCC:');
-  if (val && val.trim()) setSSCC(val.trim());
-}
+function manualSSCC(){ var v=prompt('Introduce el código SSCC:'); if(v&&v.trim()) setSSCC(v.trim()); }
 
 // ── FOTO ───────────────────────────────────────────────────────────────
-function triggerCamera() { document.getElementById('photoInput').click(); }
-
-function handlePhoto(e) {
-  var file = e.target.files[0];
-  if (!file) return;
-  photoBlob = file;
-  document.getElementById('photoImg').src = URL.createObjectURL(file);
+function triggerCamera(){ document.getElementById('photoInput').click(); }
+function handlePhoto(e){
+  var file=e.target.files[0]; if(!file)return;
+  photoBlob=file;
+  document.getElementById('photoImg').src=URL.createObjectURL(file);
   document.getElementById('photoPreview').classList.add('active');
-  document.getElementById('btnPhoto').style.display = 'none';
-  document.getElementById('card4').className = 'step-card done';
+  document.getElementById('btnPhoto').style.display='none';
+  document.getElementById('card4').className='step-card done';
 }
-
-function removePhoto() {
-  photoBlob = null;
-  document.getElementById('photoImg').src = '';
+function removePhoto(){
+  photoBlob=null;
+  document.getElementById('photoImg').src='';
   document.getElementById('photoPreview').classList.remove('active');
-  document.getElementById('btnPhoto').style.display = 'flex';
-  document.getElementById('card4').className = 'step-card';
-  document.getElementById('photoInput').value = '';
+  document.getElementById('btnPhoto').style.display='flex';
+  document.getElementById('card4').className='step-card';
+  document.getElementById('photoInput').value='';
 }
 
 // ── SUBMIT ─────────────────────────────────────────────────────────────
-async function submitIncidencia() {
-  var operario = document.getElementById('operario').value;
-  var tipo     = document.getElementById('tipoIncidencia').value;
-  var now      = new Date();
-  var fecha    = now.toLocaleDateString('es-ES');
-  var hora     = now.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-  var monthStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
-  var dayStr   = String(now.getDate()).padStart(2,'0');
-  var folderPath = 'Incidencias Almacen/' + monthStr + '/' + dayStr;
-  var filename   = ssccValue + '_' + now.toISOString().replace(/[:.]/g,'-') + '.jpg';
+async function submitIncidencia(){
+  var operario=document.getElementById('operario').value;
+  var tipo=document.getElementById('tipoIncidencia').value;
+  var now=new Date();
+  var fecha=now.toLocaleDateString('es-ES');
+  var hora=now.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  var monthStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  var dayStr=String(now.getDate()).padStart(2,'0');
+  var folderPath='Incidencias Almacen/'+monthStr+'/'+dayStr;
+  var filename=ssccValue+'_'+now.toISOString().replace(/[:.]/g,'-')+'.jpg';
 
-  document.getElementById('btnSubmit').disabled = true;
-  var driveUrl = '', driveStatus = 'pending';
+  document.getElementById('btnSubmit').disabled=true;
+  var driveUrl='', driveStatus='pending';
 
-  if (!SCRIPT_URL) {
-    showStatus('error', '⚠️ Configura primero la URL del Apps Script.');
-    document.getElementById('btnSubmit').disabled = false;
-    return;
-  }
-
-  showStatus('uploading', photoBlob ? 'Subiendo foto y guardando registro...' : 'Guardando registro en Sheets...');
+  if(!SCRIPT_URL){ showStatus('error','⚠️ Configura primero la URL del Apps Script.'); document.getElementById('btnSubmit').disabled=false; return; }
 
   try {
-    var payload = {
-      action: 'registrar',
-      operario, tipo, sscc: ssccValue, fecha, hora,
-      timestamp: now.toISOString(),
-      folderPath: photoBlob ? folderPath : null,
-      filename:   photoBlob ? filename   : null,
-      image:      photoBlob ? await blobToBase64(photoBlob) : null
-    };
+    // PASO 1: Guardar registro en Sheets
+    showStatus('uploading','Guardando registro en Sheets...');
+    var regUrl=SCRIPT_URL
+      +'?action=registrar'
+      +'&fecha='+encodeURIComponent(fecha)
+      +'&hora='+encodeURIComponent(hora)
+      +'&operario='+encodeURIComponent(operario)
+      +'&tipo='+encodeURIComponent(tipo)
+      +'&sscc='+encodeURIComponent(ssccValue)
+      +'&timestamp='+encodeURIComponent(now.toISOString());
 
-    var res  = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-    var data = await res.json();
+    var regResult=await jsonp(regUrl);
+    if(!regResult.ok) throw new Error(regResult.error||'Error al guardar en Sheets');
 
-    if (data.ok) {
-      driveUrl   = data.url || '';
-      driveStatus = photoBlob ? 'ok' : 'pending';
-      showStatus('success', photoBlob
-        ? '✅ Foto subida y registro guardado en Sheets · ' + folderPath
-        : '✅ Incidencia registrada en Sheets (sin foto)');
+    driveStatus='pending';
+
+    // PASO 2: Subir foto si hay
+    if(photoBlob){
+      showStatus('uploading','Subiendo foto a Drive...');
+      var base64Full=await blobToBase64(photoBlob);
+      // Quitar cabecera "data:image/jpeg;base64," — enviamos solo los bytes
+      var base64Data=base64Full.split(',')[1];
+
+      // La foto puede ser grande — la comprimimos antes de enviar
+      var compressed=await compressImage(photoBlob, 800, 0.7);
+      var compBase64=compressed.split(',')[1];
+
+      var fotoUrl=SCRIPT_URL
+        +'?action=uploadFoto'
+        +'&filename='+encodeURIComponent(filename)
+        +'&folderPath='+encodeURIComponent(folderPath)
+        +'&image='+encodeURIComponent(compBase64);
+
+      var fotoResult=await jsonp(fotoUrl, 30000);
+      if(fotoResult.ok){
+        driveUrl=fotoResult.url||'';
+        driveStatus='ok';
+        showStatus('success','✅ Incidencia registrada y foto subida a Drive · '+folderPath);
+      } else {
+        throw new Error(fotoResult.error||'Error al subir foto');
+      }
     } else {
-      throw new Error(data.error || 'Error desconocido');
+      showStatus('success','✅ Incidencia registrada en Sheets (sin foto).');
     }
-  } catch(err) {
-    driveStatus = 'err';
-    showStatus('error', '⚠️ Error: ' + err.message);
+
+  } catch(err){
+    console.error(err);
+    driveStatus='err';
+    showStatus('error','⚠️ '+err.message);
   }
 
-  saveToHistory({ operario, tipo, sscc: ssccValue, fecha, hora, timestamp: now.toISOString(), driveUrl, driveStatus });
+  saveToHistory({operario,tipo,sscc:ssccValue,fecha,hora,timestamp:now.toISOString(),driveUrl,driveStatus});
   renderHistory();
 
-  setTimeout(function() {
-    document.getElementById('operario').value = '';
-    document.getElementById('tipoIncidencia').value = '';
-    ssccValue = '';
-    document.getElementById('ssccDisplay').textContent = '';
-    document.getElementById('ssccDisplay').style.display = 'none';
-    document.getElementById('ssccEmpty').style.display = 'inline';
+  setTimeout(function(){
+    document.getElementById('operario').value='';
+    document.getElementById('tipoIncidencia').value='';
+    ssccValue='';
+    document.getElementById('ssccDisplay').textContent='';
+    document.getElementById('ssccDisplay').style.display='none';
+    document.getElementById('ssccEmpty').style.display='inline';
     removePhoto();
-    ['card1','card2','card3','card4'].forEach(function(id){ document.getElementById(id).className = 'step-card'; });
-    document.getElementById('btnSubmit').disabled = true;
-  }, 3000);
+    ['card1','card2','card3','card4'].forEach(function(id){ document.getElementById(id).className='step-card'; });
+    document.getElementById('btnSubmit').disabled=true;
+  },3500);
 }
 
-function blobToBase64(blob) {
-  return new Promise(function(resolve, reject) {
-    var r = new FileReader();
-    r.onload = function(){ resolve(r.result); };
-    r.onerror = reject;
+// Comprimir imagen antes de enviar
+function compressImage(blob, maxWidth, quality){
+  return new Promise(function(resolve){
+    var img=new Image();
+    var url=URL.createObjectURL(blob);
+    img.onload=function(){
+      var w=img.width, h=img.height;
+      if(w>maxWidth){ h=Math.round(h*maxWidth/w); w=maxWidth; }
+      var canvas=document.createElement('canvas');
+      canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.src=url;
+  });
+}
+
+function blobToBase64(blob){
+  return new Promise(function(resolve,reject){
+    var r=new FileReader();
+    r.onload=function(){ resolve(r.result); };
+    r.onerror=reject;
     r.readAsDataURL(blob);
   });
 }
 
-function showStatus(type, msg) {
-  var el = document.getElementById('statusMsg');
-  el.className = 'status-msg ' + type;
-  el.innerHTML = type === 'uploading' ? '<div class="spinner"></div> ' + msg : msg;
+function showStatus(type,msg){
+  var el=document.getElementById('statusMsg');
+  el.className='status-msg '+type;
+  el.innerHTML=type==='uploading'?'<div class="spinner"></div> '+msg:msg;
 }
 
 // ── HISTORIAL ──────────────────────────────────────────────────────────
-function saveToHistory(record) {
-  var h = JSON.parse(localStorage.getItem('incidencias') || '[]');
-  h.unshift(record);
-  if (h.length > 100) h = h.slice(0, 100);
-  localStorage.setItem('incidencias', JSON.stringify(h));
+function saveToHistory(record){
+  var h=JSON.parse(localStorage.getItem('incidencias')||'[]');
+  h.unshift(record); if(h.length>100) h=h.slice(0,100);
+  localStorage.setItem('incidencias',JSON.stringify(h));
 }
-
-function loadHistory() { renderHistory(); }
-
-function renderHistory() {
-  var h      = JSON.parse(localStorage.getItem('incidencias') || '[]');
-  var today  = new Date().toLocaleDateString('es-ES');
-  var recs   = h.filter(function(r){ return r.fecha === today; });
-  var list   = document.getElementById('historyList');
-
-  if (!recs.length) {
-    list.innerHTML = '<p style="color:var(--muted);font-size:13px;text-align:center;padding:20px 0;">Sin registros hoy</p>';
-    return;
-  }
-
-  list.innerHTML = recs.map(function(r) {
-    var sc = r.driveStatus === 'ok' ? 'ok' : r.driveStatus === 'err' ? 'err' : 'pending';
-    var st = r.driveStatus === 'ok' ? '☁️ Drive' : r.driveStatus === 'err' ? '❌ Error' : '📋 Sheets';
-    var lk = r.driveUrl ? '<a class="hi-link" href="' + r.driveUrl + '" target="_blank">Ver foto ↗</a>' : '';
+function loadHistory(){ renderHistory(); }
+function renderHistory(){
+  var h=JSON.parse(localStorage.getItem('incidencias')||'[]');
+  var today=new Date().toLocaleDateString('es-ES');
+  var recs=h.filter(function(r){ return r.fecha===today; });
+  var list=document.getElementById('historyList');
+  if(!recs.length){ list.innerHTML='<p style="color:var(--muted);font-size:13px;text-align:center;padding:20px 0;">Sin registros hoy</p>'; return; }
+  list.innerHTML=recs.map(function(r){
+    var sc=r.driveStatus==='ok'?'ok':r.driveStatus==='err'?'err':'pending';
+    var st=r.driveStatus==='ok'?'☁️ Drive':r.driveStatus==='err'?'❌ Error':'📋 Sheets';
+    var lk=r.driveUrl?'<a class="hi-link" href="'+r.driveUrl+'" target="_blank">Ver foto ↗</a>':'';
     return '<div class="history-item">'
-      + '<div class="hi-badge"><div class="hi-time">' + r.hora + '</div>' + r.fecha + '</div>'
-      + '<div class="hi-info"><div class="hi-sscc">' + (r.sscc||'—') + '</div>'
-      + '<div class="hi-type">' + r.tipo + '</div>'
-      + '<div class="hi-operator">👤 ' + r.operario + '</div>' + lk + '</div>'
-      + '<span class="hi-status ' + sc + '">' + st + '</span></div>';
+      +'<div class="hi-badge"><div class="hi-time">'+r.hora+'</div>'+r.fecha+'</div>'
+      +'<div class="hi-info"><div class="hi-sscc">'+(r.sscc||'—')+'</div>'
+      +'<div class="hi-type">'+r.tipo+'</div>'
+      +'<div class="hi-operator">👤 '+r.operario+'</div>'+lk+'</div>'
+      +'<span class="hi-status '+sc+'">'+st+'</span></div>';
   }).join('');
 }
 </script>
